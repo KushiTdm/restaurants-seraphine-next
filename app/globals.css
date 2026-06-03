@@ -1,0 +1,199 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #EFE7D6;
+  color: #1C2B22;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+/* ─────────────────────────────────────────────
+   Responsive overrides
+   Breakpoints:
+     • ≤ 1024px tablet
+     • ≤ 760px  mobile
+   Inline styles win unless we !important.
+   ───────────────────────────────────────────── */
+
+/* ===== Nav ===== */
+.nav-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 56px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+}
+
+.nav-burger {
+  display: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #EFE7D6;
+}
+
+.nav-drawer {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .nav-row { padding: 14px 18px !important; }
+  .nav-links { display: none !important; }
+  .nav-burger { display: inline-flex !important; }
+  .nav-drawer {
+    display: block;
+    background: rgba(28,43,34,.98);
+    border-top: 1px solid rgba(200,162,75,.15);
+    padding: 8px 18px 18px;
+  }
+  .nav-drawer a {
+    display: block;
+    padding: 14px 4px;
+    border-bottom: 1px solid rgba(239,231,214,.08);
+    font-size: 16px;
+    color: rgba(239,231,214,.9);
+    text-decoration: none;
+  }
+  .nav-drawer .nav-cta {
+    margin-top: 14px;
+    text-align: center;
+    background: #C8A24B;
+    color: #1C2B22;
+    padding: 14px;
+    font-weight: 600;
+    border-radius: 2px;
+    border-bottom: none;
+  }
+}
+
+/* ===== Home – hero ===== */
+@media (max-width: 1024px) {
+  .home-hero { grid-template-columns: 1fr !important; gap: 32px !important; padding: 48px 32px 56px !important; }
+  .home-hero-photo { height: 360px !important; }
+}
+@media (max-width: 760px) {
+  .home-hero { padding: 36px 20px 48px !important; gap: 24px !important; }
+  .home-hero h1 { font-size: clamp(38px, 9vw, 56px) !important; }
+  .home-hero-photo { height: 280px !important; }
+  .home-hero-ctas { flex-wrap: wrap; }
+  .home-hero-ctas button { flex: 1 1 auto; min-width: 0; }
+}
+
+/* ===== Home – ardoise ===== */
+@media (max-width: 1024px) {
+  .home-ardoise { padding: 60px 32px !important; }
+  .home-ardoise-grid { grid-template-columns: 1fr 1fr !important; gap: 32px !important; }
+  .home-ardoise-head { flex-direction: column; align-items: flex-start !important; gap: 8px; }
+}
+@media (max-width: 760px) {
+  .home-ardoise { padding: 48px 20px !important; }
+  .home-ardoise h2 { font-size: 32px !important; }
+  .home-ardoise-grid { grid-template-columns: 1fr !important; gap: 28px !important; }
+}
+
+/* ===== Home – maison ===== */
+@media (max-width: 1024px) {
+  .home-maison { grid-template-columns: 1fr !important; padding: 0 32px 60px !important; gap: 20px !important; }
+  .home-maison-left { padding-right: 0 !important; }
+  .home-maison-block { min-height: 340px; }
+}
+@media (max-width: 760px) {
+  .home-maison { padding: 0 20px 48px !important; }
+  .home-maison-block { padding: 36px 24px !important; }
+  .home-maison-block h2 { font-size: 32px !important; }
+  .home-maison-stats { gap: 20px !important; flex-wrap: wrap; }
+  .home-maison-left { grid-template-rows: auto auto !important; }
+}
+
+/* ===== Home – CTA réservation ===== */
+@media (max-width: 760px) {
+  .home-cta {
+    flex-direction: column;
+    align-items: flex-start !important;
+    padding: 48px 20px !important;
+    gap: 24px !important;
+  }
+  .home-cta-title { font-size: 36px !important; }
+}
+
+/* ===== Home – footer ===== */
+@media (max-width: 1024px) {
+  .home-footer { grid-template-columns: 1fr 1fr !important; padding: 44px 32px !important; gap: 28px !important; }
+}
+@media (max-width: 760px) {
+  .home-footer { grid-template-columns: 1fr !important; padding: 40px 20px 32px !important; gap: 28px !important; }
+}
+
+/* ===== Carte ===== */
+@media (max-width: 1024px) {
+  .carte-header { padding: 44px 32px 32px !important; }
+  .carte-filter { padding: 12px 32px !important; }
+  .carte-body { padding: 36px 32px 64px !important; }
+  .carte-grid { grid-template-columns: 1fr !important; gap: 0 !important; }
+  .carte-cta { padding: 48px 32px !important; }
+}
+@media (max-width: 760px) {
+  .carte-header { padding: 34px 20px 24px !important; }
+  .carte-header-meta { flex-direction: column; align-items: flex-start !important; gap: 6px; }
+  .carte-filter { padding: 10px 20px !important; }
+  .carte-filter-row { gap: 6px !important; }
+  .carte-search { width: 100%; margin-left: 0 !important; min-width: 0 !important; }
+  .carte-body { padding: 28px 20px 56px !important; }
+  .carte-wines { padding: 28px 22px !important; }
+  .carte-wines-grid { grid-template-columns: 1fr !important; gap: 0 !important; }
+  .carte-cta {
+    flex-direction: column;
+    align-items: flex-start !important;
+    padding: 40px 20px !important;
+    gap: 20px !important;
+  }
+  .carte-cta-title { font-size: 32px !important; }
+  .carte-cta button { width: 100%; }
+}
+
+/* ===== Réservation ===== */
+@media (max-width: 1024px) {
+  .resa-header { padding: 32px 32px 24px !important; }
+  .resa-body { padding: 32px 32px 64px !important; }
+  .resa-grid { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .resa-aside { position: static !important; }
+  .resa-confirm { padding: 56px 24px 80px !important; }
+}
+@media (max-width: 760px) {
+  .resa-header { padding: 26px 20px 20px !important; }
+  .resa-header h1 { font-size: clamp(32px, 8vw, 44px) !important; }
+  .resa-stepper-label { display: none; }
+  .resa-stepper-sep { width: 14px !important; margin: 0 6px !important; }
+  .resa-body { padding: 26px 20px 56px !important; }
+  .resa-form-grid { grid-template-columns: 1fr !important; }
+  .resa-service-grid { grid-template-columns: 1fr !important; }
+  .resa-party-grid button { height: 54px !important; font-size: 20px !important; }
+  .resa-party-grid button:not(:last-child) { width: 54px !important; }
+  .resa-party-grid button:last-child { padding: 0 16px !important; font-size: 12px !important; white-space: nowrap; }
+  .resa-actions { flex-direction: column-reverse; align-items: stretch !important; }
+  .resa-actions button { width: 100%; justify-content: center; }
+  .resa-confirm-grid { grid-template-columns: 1fr !important; }
+  .resa-confirm-actions button { width: 100%; }
+}
