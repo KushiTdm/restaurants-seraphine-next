@@ -6,6 +6,7 @@ import { S } from '@/lib/tokens';
 
 const LINKS = [
   { label: 'La carte', path: '/carte' },
+  { label: 'Commander', path: '/commande' },
   { label: 'Le soir', path: '/#soir' },
   { label: 'La maison', path: '/#maison' },
   { label: 'Accès', path: '/#acces' },

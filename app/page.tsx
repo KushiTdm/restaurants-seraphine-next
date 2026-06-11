@@ -60,7 +60,7 @@ export default function HomePage() {
               La cantine quand le jour tombe&nbsp;: lumière basse, vin nature, plats généreux à partager.
               Chaleureuse comme à la maison, dressée comme au restaurant.
             </p>
-            <div className="home-hero-ctas" style={{ display: 'flex', gap: 14, marginTop: 36, alignItems: 'center' }}>
+            <div className="home-hero-ctas" style={{ display: 'flex', gap: 14, marginTop: 36, alignItems: 'center', flexWrap: 'wrap' }}>
               <button
                 onClick={() => router.push('/reservation')}
                 style={{
@@ -75,6 +75,21 @@ export default function HomePage() {
                 }}
               >
                 Réserver le soir
+              </button>
+              <button
+                onClick={() => router.push('/commande')}
+                style={{
+                  fontSize: 15,
+                  fontWeight: 600,
+                  color: S.cream,
+                  background: S.terra,
+                  padding: '15px 32px',
+                  borderRadius: 2,
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                Commander à emporter
               </button>
               <button
                 onClick={() => router.push('/carte')}
