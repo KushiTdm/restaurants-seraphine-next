@@ -19,6 +19,23 @@ export default function Nav() {
   const linkColor = (path: string) =>
     pathname === path ? S.cream : 'rgba(239,231,214,.75)';
 
+  // Same-page hash links (e.g. /#acces) don't scroll reliably with the App
+  // Router, so we handle the scroll ourselves when already on the home page.
+  const handleHashClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    path: string,
+  ) => {
+    const hash = path.split('#')[1];
+    if (!hash) return;
+    setOpen(false);
+    if (pathname !== '/') return; // cross-page: let the Link navigate + scroll
+    const target = document.getElementById(hash);
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth' });
+    history.replaceState(null, '', `#${hash}`);
+  };
+
   return (
     <nav
       style={{
@@ -60,6 +77,7 @@ export default function Nav() {
             <Link
               key={label}
               href={path}
+              onClick={(e) => handleHashClick(e, path)}
               style={{
                 textDecoration: 'none',
                 fontSize: 14.5,
@@ -111,7 +129,7 @@ export default function Nav() {
       {open && (
         <div className="nav-drawer">
           {LINKS.map(({ label, path }) => (
-            <Link key={label} href={path} onClick={() => setOpen(false)}>
+            <Link key={label} href={path} onClick={(e) => handleHashClick(e, path)}>
               {label}
             </Link>
           ))}

@@ -386,6 +386,55 @@ export default function HomePage() {
           <p style={{ fontSize: 14, marginTop: 14, maxWidth: 290, lineHeight: 1.6, color: S.muted }}>
             Cantine du soir &amp; bar à vins. Le 11ᵉ, à la nuit tombée.
           </p>
+          <div style={{ display: 'flex', gap: 12, marginTop: 22 }}>
+            {(
+              [
+                ['Instagram', 'https://instagram.com/seraphine.paris',
+                  <>
+                    <rect x="3" y="3" width="18" height="18" rx="5" />
+                    <circle cx="12" cy="12" r="4" />
+                    <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+                  </>],
+                ['Facebook', 'https://facebook.com/seraphine.paris',
+                  <path d="M14.5 8.5h2V5.7h-2.3c-2 0-3.2 1.2-3.2 3.3v1.8H9v2.8h2v6.6h2.9v-6.6h2.2l.4-2.8h-2.6V9.4c0-.6.3-.9 1.1-.9Z" fill="currentColor" stroke="none" />],
+                ['TikTok', 'https://tiktok.com/@seraphine.paris',
+                  <path d="M14 4v9.3a2.7 2.7 0 1 1-2.2-2.65V8.1A5.2 5.2 0 1 0 16.5 13.2V9.2a5.4 5.4 0 0 0 3.2 1V7.6a3.1 3.1 0 0 1-3.2-3.1V4H14Z" fill="currentColor" stroke="none" />],
+              ] as [string, string, React.ReactNode][]
+            ).map(([label, href, icon]) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: 38,
+                  height: 38,
+                  borderRadius: '50%',
+                  color: 'rgba(239,231,214,.85)',
+                  border: '1px solid rgba(239,231,214,.22)',
+                  transition: 'color .15s, border-color .15s',
+                }}
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  {icon}
+                </svg>
+              </a>
+            ))}
+          </div>
         </div>
         <div>
           <div

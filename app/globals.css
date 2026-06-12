@@ -8,6 +8,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Offset hash-anchor targets so the sticky nav doesn't cover them */
+#soir, #maison, #acces {
+  scroll-margin-top: 84px;
+}
+
 body {
   background: #EFE7D6;
   color: #1C2B22;
