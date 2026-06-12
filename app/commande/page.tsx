@@ -45,12 +45,47 @@ const CATS: { id: Cat; label: string }[] = [
   { id: 'desserts', label: 'Pour finir' },
 ];
 
+const payInput: React.CSSProperties = {
+  width: '100%',
+  fontFamily: S.font,
+  fontSize: 15,
+  padding: '11px 14px',
+  border: '1.5px solid rgba(28,43,34,.2)',
+  borderRadius: 2,
+  outline: 'none',
+  background: '#fff',
+  color: S.forest,
+  boxSizing: 'border-box',
+};
+const payLabel: React.CSSProperties = {
+  fontSize: 10.5,
+  fontWeight: 700,
+  letterSpacing: '.1em',
+  textTransform: 'uppercase',
+  color: 'rgba(28,43,34,.5)',
+  marginBottom: 6,
+};
+const cardBadge: React.CSSProperties = {
+  fontSize: 9,
+  fontWeight: 700,
+  color: '#fff',
+  padding: '3px 6px',
+  borderRadius: 3,
+  letterSpacing: '.05em',
+};
+
 export default function CommandePage() {
   const [panier, setPanier] = useState<Record<number, number>>({});
   const [mode, setMode] = useState<Mode>('a_emporter');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [done, setDone] = useState(false);
   const [activeCat, setActiveCat] = useState<Cat>('plats');
+  const [paying, setPaying] = useState(false);
+  const [promo, setPromo] = useState('');
+  const [promoOk, setPromoOk] = useState(false);
+  const [promoError, setPromoError] = useState('');
+  const [card, setCard] = useState({ name: '', num: '', exp: '', cvc: '' });
+  const [processing, setProcessing] = useState(false);
 
   const add = (id: number) => setPanier((p) => ({ ...p, [id]: (p[id] || 0) + 1 }));
   const remove = (id: number) =>
@@ -70,6 +105,41 @@ export default function CommandePage() {
   const panierItems = Object.entries(panier)
     .map(([id, qty]) => ({ item: ITEMS.find((i) => i.id === Number(id))!, qty }))
     .filter((x) => x.item);
+
+  const discount = promoOk ? Math.round(total * 0.1) : 0;
+  const toPay = total - discount;
+
+  const applyPromo = () => {
+    const code = promo.trim().toUpperCase();
+    if (code === 'SERAPHINE10' || code === 'BIENVENUE10') {
+      setPromoOk(true);
+      setPromoError('');
+    } else {
+      setPromoOk(false);
+      setPromoError('Code non reconnu');
+    }
+  };
+
+  const fmtCard = (v: string) =>
+    v.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
+  const fmtExp = (v: string) => {
+    const d = v.replace(/\D/g, '').slice(0, 4);
+    return d.length > 2 ? `${d.slice(0, 2)}/${d.slice(2)}` : d;
+  };
+  const cardValid =
+    !!card.name.trim() &&
+    card.num.replace(/\s/g, '').length === 16 &&
+    /^\d{2}\/\d{2}$/.test(card.exp) &&
+    card.cvc.length >= 3;
+
+  const pay = () => {
+    if (!cardValid) return;
+    setProcessing(true);
+    setTimeout(() => {
+      setProcessing(false);
+      setDone(true);
+    }, 1400);
+  };
 
   if (done) {
     return (
@@ -150,17 +220,21 @@ export default function CommandePage() {
                 <span style={{ color: S.gold }}>{item.p * qty}€</span>
               </div>
             ))}
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                marginTop: 14,
-                fontWeight: 600,
-                fontSize: 16,
-              }}
-            >
-              <span>Total</span>
-              <span style={{ color: S.gold }}>{total}€</span>
+            <div style={{ borderTop: '1px solid rgba(239,231,214,.12)', marginTop: 10, paddingTop: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: 14, color: S.muted }}>
+                <span>Sous-total</span>
+                <span>{total}€</span>
+              </div>
+              {discount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', fontSize: 14, color: S.gold }}>
+                  <span>Réduction promo</span>
+                  <span>−{discount}€</span>
+                </div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 6, fontWeight: 600, fontSize: 16 }}>
+                <span>Payé par carte</span>
+                <span style={{ color: S.gold }}>{toPay}€</span>
+              </div>
             </div>
           </div>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', marginTop: 28 }}>
@@ -181,6 +255,129 @@ export default function CommandePage() {
           </div>
           <p style={{ fontSize: 12, color: S.muted, marginTop: 14 }}>
             9 rue Saint-Maur, 75011 · 01 43 00 00 00
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (paying) {
+    return (
+      <div style={{ fontFamily: S.font, background: S.cream, color: S.forest, minHeight: '100vh' }}>
+        <div style={{ background: S.forest, color: S.cream, padding: '32px 24px 28px' }}>
+          <div style={{ maxWidth: 520, margin: '0 auto' }}>
+            <button
+              onClick={() => setPaying(false)}
+              style={{ background: 'transparent', border: 'none', color: S.muted, cursor: 'pointer', fontSize: 13, padding: 0, marginBottom: 14 }}
+            >
+              ← Retour au panier
+            </button>
+            <div style={kicker(S.gold)}>Paiement sécurisé</div>
+            <h1 style={{ fontSize: 'clamp(30px,5vw,44px)', fontWeight: 500, letterSpacing: '-0.025em', lineHeight: 1, margin: '8px 0 0' }}>
+              Finaliser la commande
+            </h1>
+          </div>
+        </div>
+
+        <div style={{ maxWidth: 520, margin: '0 auto', padding: '28px 24px 90px' }}>
+          {/* recap */}
+          <div style={{ background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, padding: '20px 22px' }}>
+            <div style={{ ...kicker('rgba(28,43,34,.5)'), marginBottom: 12 }}>
+              Votre commande · {mode === 'a_emporter' ? 'À emporter' : 'Sur place'}
+            </div>
+            {panierItems.map(({ item, qty }) => (
+              <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 0', fontSize: 14.5 }}>
+                <span>
+                  {qty > 1 && <span style={{ color: S.terra, marginRight: 6 }}>{qty}×</span>}
+                  {item.n}
+                </span>
+                <span style={{ fontWeight: 600 }}>{item.p * qty}€</span>
+              </div>
+            ))}
+            <div style={{ borderTop: `1px solid ${S.border}`, marginTop: 8, paddingTop: 10 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: 'rgba(28,43,34,.65)', padding: '2px 0' }}>
+                <span>Sous-total</span>
+                <span>{total}€</span>
+              </div>
+              {discount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: S.terra, padding: '2px 0' }}>
+                  <span>Réduction (-10%)</span>
+                  <span>−{discount}€</span>
+                </div>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 18, fontWeight: 700, marginTop: 6 }}>
+                <span>Total</span>
+                <span style={{ color: S.terra }}>{toPay}€</span>
+              </div>
+            </div>
+          </div>
+
+          {/* promo */}
+          <div style={{ marginTop: 18 }}>
+            <div style={{ ...kicker('rgba(28,43,34,.5)'), marginBottom: 8 }}>Code promo</div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <input
+                value={promo}
+                onChange={(e) => { setPromo(e.target.value); setPromoError(''); }}
+                placeholder="Ex. SERAPHINE10"
+                style={{ flex: 1, fontFamily: S.font, fontSize: 14, padding: '11px 14px', border: `1.5px solid ${promoError ? S.terra : 'rgba(28,43,34,.2)'}`, borderRadius: 2, outline: 'none', background: '#fff', color: S.forest, boxSizing: 'border-box' }}
+              />
+              <button
+                onClick={applyPromo}
+                style={{ padding: '0 20px', background: S.forest, color: S.cream, border: 'none', borderRadius: 2, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}
+              >
+                Appliquer
+              </button>
+            </div>
+            {promoOk && <div style={{ fontSize: 12.5, color: '#2e7d32', marginTop: 6 }}>✓ Code appliqué — 10% de réduction</div>}
+            {promoError && <div style={{ fontSize: 12.5, color: S.terra, marginTop: 6 }}>{promoError}</div>}
+          </div>
+
+          {/* card */}
+          <div style={{ marginTop: 24, background: '#fff', border: `1px solid ${S.border}`, borderRadius: 4, padding: '20px 22px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div style={kicker('rgba(28,43,34,.5)')}>Carte bancaire</div>
+              <div style={{ display: 'flex', gap: 5 }}>
+                <span style={{ ...cardBadge, background: '#1a1f71' }}>VISA</span>
+                <span style={{ ...cardBadge, background: '#eb001b' }}>MC</span>
+              </div>
+            </div>
+            <label style={{ display: 'block', marginBottom: 12 }}>
+              <div style={payLabel}>Titulaire</div>
+              <input value={card.name} onChange={(e) => setCard((c) => ({ ...c, name: e.target.value }))} placeholder="Prénom Nom" style={payInput} />
+            </label>
+            <label style={{ display: 'block', marginBottom: 12 }}>
+              <div style={payLabel}>Numéro de carte</div>
+              <input value={card.num} onChange={(e) => setCard((c) => ({ ...c, num: fmtCard(e.target.value) }))} placeholder="4242 4242 4242 4242" inputMode="numeric" style={payInput} />
+            </label>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <label style={{ display: 'block', flex: 1 }}>
+                <div style={payLabel}>Expiration</div>
+                <input value={card.exp} onChange={(e) => setCard((c) => ({ ...c, exp: fmtExp(e.target.value) }))} placeholder="MM/AA" inputMode="numeric" style={payInput} />
+              </label>
+              <label style={{ display: 'block', flex: 1 }}>
+                <div style={payLabel}>CVC</div>
+                <input value={card.cvc} onChange={(e) => setCard((c) => ({ ...c, cvc: e.target.value.replace(/\D/g, '').slice(0, 3) }))} placeholder="123" inputMode="numeric" style={payInput} />
+              </label>
+            </div>
+          </div>
+
+          <button
+            onClick={pay}
+            disabled={!cardValid || processing}
+            style={{ width: '100%', marginTop: 20, padding: '16px', background: cardValid ? S.terra : 'rgba(28,43,34,.25)', color: '#fff', border: 'none', borderRadius: 2, cursor: cardValid && !processing ? 'pointer' : 'not-allowed', fontSize: 16, fontWeight: 700, letterSpacing: '.02em', transition: 'all .15s' }}
+          >
+            {processing ? 'Paiement en cours…' : `Payer ${toPay}€`}
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, marginTop: 14, fontSize: 12, color: 'rgba(28,43,34,.5)' }}>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            Paiement sécurisé — propulsé par <strong style={{ color: '#635bff' }}>Stripe</strong>
+          </div>
+          <p style={{ textAlign: 'center', fontSize: 11.5, color: 'rgba(28,43,34,.4)', marginTop: 10 }}>
+            Démo — carte de test 4242 4242 4242 4242, date future, CVC libre
           </p>
         </div>
       </div>
@@ -423,7 +620,10 @@ export default function CommandePage() {
                   <span style={{ color: S.gold }}>{total}€</span>
                 </div>
                 <button
-                  onClick={() => setDone(true)}
+                  onClick={() => {
+                    setDrawerOpen(false);
+                    setPaying(true);
+                  }}
                   style={{
                     width: '100%',
                     marginTop: 16,
@@ -438,7 +638,7 @@ export default function CommandePage() {
                     letterSpacing: '.04em',
                   }}
                 >
-                  Valider la commande — {total}€
+                  Passer au paiement — {total}€
                 </button>
               </div>
             )}
