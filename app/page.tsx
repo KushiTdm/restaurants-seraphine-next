@@ -411,6 +411,35 @@ export default function HomePage() {
             Bar jusqu&apos;à minuit
           </div>
         </div>
+        <div
+          style={{
+            gridColumn: '1 / -1',
+            marginTop: 16,
+            paddingTop: 20,
+            borderTop: '1px solid rgba(239,231,214,.15)',
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 10,
+            fontSize: 13,
+            color: S.muted,
+          }}
+        >
+          <span>© 2026 Séraphine — Tous droits réservés</span>
+          <span>
+            Conçu &amp; développé par{' '}
+            <a
+              href="https://neuraweb.tech"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: S.gold, textDecoration: 'none', fontWeight: 600 }}
+            >
+              NeuraWeb
+            </a>
+            {' '}— web, automatisation &amp; intégration IA
+          </span>
+        </div>
       </footer>
     </div>
   );
